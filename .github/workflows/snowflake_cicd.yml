@@ -1,0 +1,53 @@
+
+name: Deploy Streamlit to Snowflake
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout GitHub repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Install Python
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 3. Install Snowflake CLI
+      - name: Install Snowflake CLI
+        run: pip install snowflake-cli
+
+      # 4. Configure Snowflake connection
+      - name: Configure Snowflake
+        env:
+          SF_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
+          SF_USER: ${{ secrets.SF_USER }}
+          SF_PASSWORD: ${{ secrets.SF_PASSWORD }}
+        run: |
+          mkdir -p ~/.snowflake
+
+          cat > ~/.snowflake/config.toml <<EOF
+          [connections.demo]
+          account = "$SF_ACCOUNT"
+          user = "$SF_USER"
+          password = "$SF_PASSWORD"
+          warehouse = "COMPUTE_WH"
+          database = "DEMO_DB"
+          schema = "PUBLIC"
+          role = "SYSADMIN"
+          EOF
+
+      # 5. Deploy Streamlit application
+      - name: Deploy to Snowflake
+        run: |
+          snow streamlit deploy MY_STREAMLIT_APP \
+            --replace \
+            --connection demo
