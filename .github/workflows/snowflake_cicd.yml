@@ -73,4 +73,7 @@ jobs:
         run: |
           snow streamlit deploy my_streamlit_app \
             --replace \
-            --connection demo
+            --connection demo \
+            --database SF_CICD \
+            --schema PUBLIC
+
