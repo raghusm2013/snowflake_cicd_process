@@ -8,7 +8,7 @@ from snowflake.snowpark.context import get_active_session
 # --------------------------------------------------
 
 st.set_page_config(
-    page_title="Snowflake Metadata Explorer",
+    page_title="Snowflake Metadata Explorer- Testing",
     page_icon="❄️",
     layout="wide",
     initial_sidebar_state="expanded"
