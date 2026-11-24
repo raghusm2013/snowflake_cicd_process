@@ -3,8 +3,8 @@ from snowflake.snowpark.context import get_active_session
 
 DB = "SNOWFLAKE_LEARNING_DB"
 
-st.set_page_config(page_title="Information Schema Dashboard-Rerun test", layout="wide")
-st.title("Information Schema Dashboard")
+st.set_page_config(page_title="Information Schema Dashboard", layout="wide")
+st.title("Information Schema Dashboard- This is Testing")
 st.caption(f"Source: {DB}.INFORMATION_SCHEMA")
 
 session = get_active_session()
