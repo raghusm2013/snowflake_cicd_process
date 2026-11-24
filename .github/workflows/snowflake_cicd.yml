@@ -57,14 +57,12 @@ jobs:
           account = "$SF_ACCOUNT"
           user = "$SF_USER"
           password = "$SF_PASSWORD"
-          warehouse = "COMPUTE_WH"
-          database = "DEMO_DB"
-          schema = "PUBLIC"
-          role = "SYSADMIN"
+          warehouse = "$SF_WAREHOUSE"
+          role = "$SF_ROLE"
           EOF
-      
+
           chmod 0600 ~/.snowflake/config.toml
-      
+          
           echo "Snowflake configuration created successfully"
 
 
