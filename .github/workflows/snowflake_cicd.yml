@@ -45,6 +45,9 @@ jobs:
           role = "SYSADMIN"
           EOF
 
+          # Fix Snowflake configuration permissions
+          chmod 0600 ~/.snowflake/config.toml
+
       # 5. Deploy Streamlit application
       - name: Deploy to Snowflake
         run: |
