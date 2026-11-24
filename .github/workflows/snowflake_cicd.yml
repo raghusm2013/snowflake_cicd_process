@@ -73,5 +73,5 @@ jobs:
             --replace \
             --connection demo \
             --database SF_CICD \
-            --schema PUBLIC
+            --schema DEV
 
