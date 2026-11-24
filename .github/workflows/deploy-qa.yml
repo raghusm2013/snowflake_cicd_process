@@ -1,0 +1,51 @@
+
+name: Deploy Streamlit App to QA
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-qa:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Snowflake CLI
+        run: |
+          pip install snowflake-cli
+
+      - name: Configure Snowflake connection
+        env:
+          SF_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
+          SF_USER: ${{ secrets.SF_USERNAME }}
+          SF_PASSWORD: ${{ secrets.SF_PASSWORD }}
+          SF_WAREHOUSE: ${{ secrets.SF_WAREHOUSE }}
+          SF_ROLE: ${{ secrets.SF_ROLE }}
+        run: |
+          mkdir -p ~/.snowflake
+
+          cat > ~/.snowflake/config.toml <<EOF
+          [connections.demo]
+          account = "$SF_ACCOUNT"
+          user = "$SF_USER"
+          password = "$SF_PASSWORD"
+          warehouse = "$SF_WAREHOUSE"
+          role = "$SF_ROLE"
+          EOF
+
+          chmod 0600 ~/.snowflake/config.toml
+
+      - name: Deploy Streamlit App to QA
+        run: |
+          snow streamlit deploy my_streamlit_app \
+            --replace \
+            --connection demo \
+            --database SF_CICD \
+            --schema QA
