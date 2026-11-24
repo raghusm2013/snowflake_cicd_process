@@ -51,6 +51,6 @@ jobs:
       # 5. Deploy Streamlit application
       - name: Deploy to Snowflake
         run: |
-          snow streamlit deploy MY_STREAMLIT_APP \
+          snow streamlit deploy my_streamlit_app \
             --replace \
             --connection demo
