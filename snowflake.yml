@@ -4,12 +4,8 @@ definition_version: 2
 entities:
   my_streamlit_app:
     type: streamlit
-    identifier:
-      name: MY_STREAMLIT_APP
-      database: DEMO_DB
-      schema: PUBLIC
-    stage: STREAMLIT_STAGE
-    main_file: streamlit_app.py
+    identifier: MY_STREAMLIT_APP
     query_warehouse: COMPUTE_WH
+    main_file: streamlit_app.py
     artifacts:
       - streamlit_app.py
