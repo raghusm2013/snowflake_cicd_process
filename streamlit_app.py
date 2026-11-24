@@ -7,8 +7,8 @@ st.title("Customer Dashboard")
 session = get_active_session()
 
 df = session.sql("""
-    SELECT *
-    FROM DEMO_DB.PUBLIC.CUSTOMERS
+SELECT *
+    FROM SF_CICD.INFORMATION_SCHEMA.APPLICABLE_ROLES
     LIMIT 100
 """).to_pandas()
 
