@@ -26,14 +26,32 @@ jobs:
         run: pip install snowflake-cli
 
       # 4. Configure Snowflake connection
+
       - name: Configure Snowflake
         env:
           SF_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
           SF_USER: ${{ secrets.SF_USER }}
           SF_PASSWORD: ${{ secrets.SF_PASSWORD }}
         run: |
+          # Validate required credentials
+          if [ -z "$SF_ACCOUNT" ]; then
+            echo "::error::SF_ACCOUNT secret is missing"
+            exit 1
+          fi
+      
+          if [ -z "$SF_USER" ]; then
+            echo "::error::SF_USER secret is missing or empty"
+            exit 1
+          fi
+      
+          if [ -z "$SF_PASSWORD" ]; then
+            echo "::error::SF_PASSWORD secret is missing"
+            exit 1
+          fi
+      
+          # Create Snowflake configuration
           mkdir -p ~/.snowflake
-
+      
           cat > ~/.snowflake/config.toml <<EOF
           [connections.demo]
           account = "$SF_ACCOUNT"
@@ -44,9 +62,11 @@ jobs:
           schema = "PUBLIC"
           role = "SYSADMIN"
           EOF
-
-          # Fix Snowflake configuration permissions
+      
           chmod 0600 ~/.snowflake/config.toml
+      
+          echo "Snowflake configuration created successfully"
+
 
       # 5. Deploy Streamlit application
       - name: Deploy to Snowflake
