@@ -48,4 +48,4 @@ jobs:
             --replace \
             --connection demo \
             --database SF_CICD \
-            --schema QA
+            --schema DEV
