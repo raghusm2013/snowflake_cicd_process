@@ -1,37 +1,27 @@
 
-name: Deploy Streamlit to Snowflake
+name: Deploy Streamlit App to QA
 
 on:
-  push:
-    branches:
-      - main
-
   workflow_dispatch:
 
 jobs:
-  deploy:
-    name: Deploy Streamlit using DCM - DEV
+  deploy-qa:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout GitHub repository
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Install Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      # 3. Install Snowflake CLI with DCM support
       - name: Install Snowflake CLI
         run: |
-          python -m pip install --upgrade pip
-          pip install "snowflake-cli>=3.24.0"
+          pip install snowflake-cli
 
-      # 4. Configure Snowflake connection
-      - name: Configure Snowflake
+      - name: Configure Snowflake connection
         env:
           SF_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
           SF_USER: ${{ secrets.SF_USERNAME }}
@@ -39,22 +29,6 @@ jobs:
           SF_WAREHOUSE: ${{ secrets.SF_WAREHOUSE }}
           SF_ROLE: ${{ secrets.SF_ROLE }}
         run: |
-          # Validate required credentials
-          if [ -z "$SF_ACCOUNT" ]; then
-            echo "::error::SF_ACCOUNT secret is missing"
-            exit 1
-          fi
-
-          if [ -z "$SF_USER" ]; then
-            echo "::error::SF_USERNAME secret is missing"
-            exit 1
-          fi
-
-          if [ -z "$SF_PASSWORD" ]; then
-            echo "::error::SF_PASSWORD secret is missing"
-            exit 1
-          fi
-
           mkdir -p ~/.snowflake
 
           cat > ~/.snowflake/config.toml <<EOF
@@ -68,23 +42,10 @@ jobs:
 
           chmod 0600 ~/.snowflake/config.toml
 
-      # 5. Test Snowflake connection
-      - name: Test Snowflake connection
+      - name: Deploy Streamlit App to QA
         run: |
-          snow connection test --connection demo
-
-      # 6. Validate DCM project definition
-      - name: DCM Plan - DEV
-        run: |
-          snow dcm plan \
-            --target DEV \
+          snow streamlit deploy my_streamlit_app \
+            --replace \
             --connection demo \
-            --save-output
-
-      # 7. Deploy Streamlit application to DEV
-      - name: DCM Deploy - DEV
-        run: |
-          snow dcm deploy \
-            --target DEV \
-            --connection demo \
-            --save-output
+            --database SF_CICD \
+            --schema QA
