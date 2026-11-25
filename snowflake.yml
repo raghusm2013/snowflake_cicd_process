@@ -1,3 +1,4 @@
+
 definition_version: 2
 
 entities:
@@ -5,6 +6,7 @@ entities:
     type: streamlit
     identifier: MY_STREAMLIT_APP
     query_warehouse: COMPUTE_WH
+    runtime_name: SYSTEM$WAREHOUSE_RUNTIME
     main_file: streamlit_app.py
     artifacts:
       - streamlit_app.py
