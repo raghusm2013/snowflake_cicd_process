@@ -228,7 +228,6 @@ with overview_tab:
             st.dataframe(
                 per_schema,
                 use_container_width=True,
-                hide_index=True
             )
 
     else:
@@ -319,7 +318,6 @@ with views_tab:
     st.dataframe(
         display_df,
         use_container_width=True,
-        hide_index=True,
         height=430
     )
 
@@ -412,7 +410,6 @@ with columns_tab:
             st.dataframe(
                 cols,
                 use_container_width=True,
-                hide_index=True,
                 height=400
             )
 
