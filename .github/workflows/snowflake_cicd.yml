@@ -6,8 +6,11 @@ on:
     branches:
       - main
 
+  workflow_dispatch:
+
 jobs:
   deploy:
+    name: Deploy Streamlit using DCM - DEV
     runs-on: ubuntu-latest
 
     steps:
@@ -16,42 +19,44 @@ jobs:
         uses: actions/checkout@v4
 
       # 2. Install Python
-      - name: Setup Python
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
-      # 3. Install Snowflake CLI
+      # 3. Install Snowflake CLI with DCM support
       - name: Install Snowflake CLI
-        run: pip install snowflake-cli
+        run: |
+          python -m pip install --upgrade pip
+          pip install "snowflake-cli>=3.24.0"
 
       # 4. Configure Snowflake connection
-
       - name: Configure Snowflake
         env:
           SF_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
           SF_USER: ${{ secrets.SF_USERNAME }}
           SF_PASSWORD: ${{ secrets.SF_PASSWORD }}
+          SF_WAREHOUSE: ${{ secrets.SF_WAREHOUSE }}
+          SF_ROLE: ${{ secrets.SF_ROLE }}
         run: |
           # Validate required credentials
           if [ -z "$SF_ACCOUNT" ]; then
             echo "::error::SF_ACCOUNT secret is missing"
             exit 1
           fi
-      
+
           if [ -z "$SF_USER" ]; then
-            echo "::error::SF_USER secret is missing or empty"
+            echo "::error::SF_USERNAME secret is missing"
             exit 1
           fi
-      
+
           if [ -z "$SF_PASSWORD" ]; then
             echo "::error::SF_PASSWORD secret is missing"
             exit 1
           fi
-      
-          # Create Snowflake configuration
+
           mkdir -p ~/.snowflake
-      
+
           cat > ~/.snowflake/config.toml <<EOF
           [connections.demo]
           account = "$SF_ACCOUNT"
@@ -62,16 +67,24 @@ jobs:
           EOF
 
           chmod 0600 ~/.snowflake/config.toml
-          
-          echo "Snowflake configuration created successfully"
 
-
-      # 5. Deploy Streamlit application
-      - name: Deploy to Snowflake
+      # 5. Test Snowflake connection
+      - name: Test Snowflake connection
         run: |
-          snow streamlit deploy my_streamlit_app \
-            --replace \
-            --connection demo \
-            --database SF_CICD \
-            --schema DEV
+          snow connection test --connection demo
 
+      # 6. Validate DCM project definition
+      - name: DCM Plan - DEV
+        run: |
+          snow dcm plan \
+            --target DEV \
+            --connection demo \
+            --save-output
+
+      # 7. Deploy Streamlit application to DEV
+      - name: DCM Deploy - DEV
+        run: |
+          snow dcm deploy \
+            --target DEV \
+            --connection demo \
+            --save-output
