@@ -90,7 +90,7 @@ def run_query(sql: str, params: tuple = ()):
 header_left, header_right = st.columns([4, 1])
 
 with header_left:
-    st.title("❄️ Snowflake Metadata Explorer")
+    st.title("❄️ Snowflake Metadata Explorer-Title")
     st.markdown(
         '<p class="dashboard-subtitle">'
         'Explore database objects, schemas, views and table structures.'
