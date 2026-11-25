@@ -1,5 +1,5 @@
 
-name: Deploy Streamlit App to QA
+name: Deploy Streamlit App to DeV
 
 on:
   workflow_dispatch:
