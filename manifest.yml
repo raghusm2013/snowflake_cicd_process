@@ -1,0 +1,34 @@
+
+manifest_version: 2
+type: DCM_PROJECT
+
+default_target: DEV
+
+targets:
+  DEV:
+    account_identifier: VCTRZBN-GQ95108
+    project_name: SF_CICD.DCM_CONTROL.DCM_STREAMLIT_DEV
+    project_owner: ACCOUNTADMIN
+    templating_config: DEV
+
+  QA:
+    account_identifier: VCTRZBN-GQ95108
+    project_name: SF_CICD.DCM_CONTROL.DCM_STREAMLIT_QA
+    project_owner: ACCOUNTADMIN
+    templating_config: QA
+
+assets:
+  metadata_explorer:
+    path: 'streamlit/metadata_explorer/**/*'
+
+templating:
+  configurations:
+    DEV:
+      database_name: SF_CICD
+      schema_name: PUBLIC
+      warehouse_name: COMPUTE_WH
+
+    QA:
+      database_name: SF_CICD
+      schema_name: QA
+      warehouse_name: COMPUTE_WH
