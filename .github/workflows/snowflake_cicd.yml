@@ -42,10 +42,26 @@ jobs:
 
           chmod 0600 ~/.snowflake/config.toml
 
-      - name: Deploy Streamlit App to QA
+
+      - name: Verify deployment source
+        run: |
+          echo "Current Git commit:"
+          git log -1 --oneline
+
+          echo "Current branch:"
+          git branch --show-current
+
+          echo "Application file checksum:"
+          sha256sum streamlit_app.py
+
+          echo "Snowflake CLI version:"
+          snow --version
+
+      - name: Deploy Streamlit App to DEV
         run: |
           snow streamlit deploy my_streamlit_app \
             --replace \
             --connection demo \
             --database SF_CICD \
-            --schema DEV
+            --schema DEV \
+            --verbose
